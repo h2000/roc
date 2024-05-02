@@ -40,7 +40,7 @@ col : List (Elem state) -> Elem state
 col = \children ->
     Col children
 
-lazy : state, (state -> Elem state) -> Elem state
+lazy : state, (state -> Elem state) -> Elem state where state implements Eq
 lazy = \state, render ->
     # This function gets called by the host during rendering. It will
     # receive the cached state and element (wrapped in Ok) if we've
@@ -76,6 +76,7 @@ none = None # I've often wanted this in elm/html. Usually end up resorting to (H
 ##
 ## col {} [child, otherElems]
 ##
+translate : Elem c, (p -> c), (p, c -> p) -> Elem p
 translate = \child, toChild, toParent ->
     when child is
         Text str ->
@@ -89,24 +90,25 @@ translate = \child, toChild, toParent ->
 
         Button config label ->
             onPress = \parentState, event ->
-                toChild parentState
-                |> config.onPress event
-                |> Action.map \c -> toParent parentState c
+                config.onPress (toChild parentState) event
+                |> Action.map \ca -> toParent parentState ca
 
             Button { onPress } (translate label toChild toParent)
 
-        Lazy renderChild ->
-            Lazy
-                \parentState ->
-                    { elem, state } = renderChild (toChild parentState)
+        # Lazy renderChild ->
+        #     Lazy
+        #         \parentState ->
+        #             { elem, state } = renderChild (toChild parentState)
 
-                    {
-                        elem: translate toChild toParent newChild,
-                        state: toParent parentState state,
-                    }
+        #             {
+        #                 elem: translate elem toChild toParent,
+        #                 state: toParent parentState state,
+        #             }
 
         None ->
             None
+
+        _ -> crash ""
 
 ## Render a list of elements, using [Elem.translate] on each of them.
 ##
@@ -126,20 +128,21 @@ translate = \child, toChild, toParent ->
 ## TODO: format as multiline type annotation once https://github.com/roc-lang/roc/issues/2586 is fixed
 list : (child -> Elem child), parent, (parent -> List child), (parent, List child -> parent) -> List (Elem parent)
 list = \renderChild, parent, toChildren, toParent ->
-    List.mapWithIndex
-        (toChildren parent)
-        \index, child ->
-            toChild = \par -> List.get (toChildren par) index
+    crash "todo"
+    # List.mapWithIndex
+    #     (toChildren parent)
+    #     \index, child ->
+    #         toChild = \par -> List.get (toChildren par) index
 
-            newChild = translateOrDrop
-                child
-                toChild
-                \par, ch ->
-                    toChildren par
-                    |> List.set ch index
-                    |> toParent
+    #         newChild = translateOrDrop
+    #             child
+    #             toChild
+    #             \par, ch ->
+    #                 toChildren par
+    #                 |> List.set ch index
+    #                 |> toParent
 
-            renderChild newChild
+    #         renderChild newChild
 
 ## Internal helper function for Elem.list
 ##
@@ -175,18 +178,20 @@ translateOrDrop = \child, toChild, toParent ->
 
             Button { onPress } (translateOrDrop label toChild toParent)
 
-        Lazy childState renderChild ->
-            Lazy
-                (toParent childState)
-                \parentState ->
-                    when toChild parentState is
-                        Ok newChild ->
-                            renderChild newChild
-                            |> translateOrDrop toChild toParent
+        # Lazy childState renderChild ->
+        #     Lazy
+        #         (toParent childState)
+        #         \parentState ->
+        #             when toChild parentState is
+        #                 Ok newChild ->
+        #                     renderChild newChild
+        #                     |> translateOrDrop toChild toParent
 
-                        Err _ ->
-                            None
+        #                 Err _ ->
+        #                     None
 
         # I don't think this should ever happen in practice.
         None ->
             None
+
+        _ -> crash "todo"

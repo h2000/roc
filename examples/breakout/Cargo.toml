@@ -7,18 +7,14 @@ version = "0.0.1"
 
 [lib]
 name = "host"
-path = "src/lib.rs"
+path = "host/lib.rs"
 crate-type = ["staticlib", "lib"]
-
-[[bin]]
-name = "host"
-path = "src/main.rs"
 
 [dependencies]
 arrayvec = "0.7.2"
 libc = "0.2"
 page_size = "0.4.2"
-roc_std = { path = "../../../../crates/roc_std" }
+roc_std = { path = "../../crates/roc_std" }
 cgmath = "0.18.0"
 colored = "2.0.0"
 copypasta = "0.7.1"
@@ -43,8 +39,6 @@ default = []
 [dependencies.bytemuck]
 version = "1.7.2"
 features = ["derive"]
-
-[workspace]
 
 # Optimizations based on https://deterministic.space/high-performance-rust.html
 [profile.release]
