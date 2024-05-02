@@ -100,8 +100,6 @@ mod cli_run {
         // consistency with typewriters, very important
         let err = err.replace('\r', "");
 
-        dbg!(format!("{:?}", err.as_str()));
-
         assert_multiline_str_eq!(err.as_str(), expected);
     }
 
@@ -767,7 +765,7 @@ mod cli_run {
     #[serial(cli_platform)]
     fn cli_args() {
         test_roc_app(
-            "examples/cli",
+            "crates/cli/tests/cli",
             "argsBROKEN.roc",
             &[],
             &[
@@ -816,7 +814,7 @@ mod cli_run {
     #[cfg_attr(windows, ignore)]
     #[serial(cli_platform)]
     fn cli_countdown_check() {
-        let path = file_path_from_root("examples/cli", "countdown.roc");
+        let path = file_path_from_root("crates/cli/tests/cli", "countdown.roc");
         let out = run_roc([CMD_CHECK, path.to_str().unwrap()], &[], &[]);
         assert!(out.status.success());
     }
@@ -934,7 +932,7 @@ mod cli_run {
     #[cfg_attr(windows, ignore)]
     fn with_env_vars() {
         test_roc_app(
-            "examples/cli",
+            "crates/cli/tests/cli",
             "env.roc",
             &[],
             &[],
@@ -956,7 +954,7 @@ mod cli_run {
     #[cfg_attr(windows, ignore)]
     fn ingested_file() {
         test_roc_app(
-            "examples/cli",
+            "crates/cli/tests/cli",
             "ingested-file.roc",
             &[],
             &[],
@@ -989,12 +987,12 @@ mod cli_run {
     #[cfg_attr(windows, ignore)]
     fn ingested_file_bytes() {
         test_roc_app(
-            "examples/cli",
+            "crates/cli/tests/cli",
             "ingested-file-bytes.roc",
             &[],
             &[],
             &[],
-            "162088\n",
+            "31539\n",
             UseValgrind::No,
             TestCliCommands::Run,
         )

@@ -3,13 +3,13 @@ app "ingested-file-bytes"
     imports [
         pf.Stdout,
         pf.Task,
-        "../../LICENSE" as license : _, # A type hole can also be used here.
+        "ingested-file.roc" as fileBytes : _, # A type hole can also be used here.
     ]
     provides [main] to pf
 
 main =
-    # Due to how license is used, it will be a List U8.
-    license
+    # Due to how fileBytes is used, it will be a List U8.
+    fileBytes
         |> List.map Num.toU64
         |> List.sum
         |> Num.toStr
