@@ -1,5 +1,5 @@
 app "rocLovesC"
-    packages { pf: "c-platform/main.roc" }
+    packages { pf: "platform.roc" }
     imports []
     provides [main] to pf
 
