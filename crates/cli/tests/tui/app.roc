@@ -1,5 +1,5 @@
 app "tui"
-    packages { pf: "tui-platform/main.roc" }
+    packages { pf: "platform.roc" }
     imports [pf.Program.{ Program }]
     provides [main] { Model } to pf
 
